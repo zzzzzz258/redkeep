@@ -1,0 +1,7 @@
+<p>Welcome to ride sharing service! Please log in first.</p>
+
+<form action="/app/login" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+</form>
