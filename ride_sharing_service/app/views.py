@@ -1,51 +1,34 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-
-
-from .forms import LoginForm
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import UserManager, User
+from .forms import LogupForm
 
 """
-   Log_in view to handle request to login or submitted login form
+   Log up surface to create a user
 """
 
 
-def log_in(request):
+def log_up(request):
     if request.method == 'POST':
-        # post request, check username and password and redirect
-        form = LoginForm(request.POST)
+        # create a user and back to login page
+        form = LogupForm(request.POST)
         if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
-            user = authenticate(request,
-                                username = username,
-                                password = password)
-            if user is not None:
-                # log in successfully, redirect to index page
-                login(request, user)
-                # TODO
-                return redirect('/app/')
-            else:
-                # log in failed, redirect to log in page with message
-                # TODO: add sm message to this
-                return redirect('/app/login')
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            email = form.cleaned_data['email']
+
+            user = User.objects.create_user(username, email, password)
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
+            
+            return redirect('login')
     else:
-        # get request, display login page info
-        # TODO
-        form = LoginForm()
-        return render(request, 'app/login.html', {'form': form})
+        form = LogupForm()
 
-
-"""
-   Log out current user, and return to login page
-"""
-
-
-@login_required
-def log_out(request):
-    logout(request)
-    return redirect('/app/login')
+    return render(request, 'registration/logup.html', {'form': form})
 
 
 """
@@ -54,7 +37,7 @@ def log_out(request):
 
 
 @login_required
-def index(request):    
-    return HttpResponse("Hello, " + request.user.get_username())
-
-
+def index(request):
+    user = request.user
+    context = {'user': user}
+    return render(request, 'app/index.html', context)

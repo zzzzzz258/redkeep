@@ -1,7 +1,16 @@
-from django import forms
+from django.forms import ModelForm, PasswordInput
+from django.contrib.auth.models import User
 
 
-class LoginForm(forms.Form):
-    username = forms.CharField(label='username', max_length = 20)
-    password = forms.CharField(label='password', max_length = 20,
-                               widget=forms.PasswordInput)
+"""
+   Form of registering a user
+"""
+
+
+class LogupForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email', 'password']
+        widgets = {
+            'password': PasswordInput(),
+        }

@@ -1,8 +1,0 @@
-from django.shortcuts import render
-from django.contrib.auth import authenticate, login
-
-def log_in(request):
-    if request.method:
-        
-
-
