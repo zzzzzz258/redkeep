@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-"""
+
 class Driver(models.Model):
     driver_id = models.BigAutoField(primary_key=True)
     user_id = models.OneToOneField(
@@ -20,4 +20,4 @@ class Driver(models.Model):
     license_plate = models.CharField(max_length=10)
     max_passengers = models.IntegerField()
     special_info = models.CharField(max_length=200, null=True)
-"""
+

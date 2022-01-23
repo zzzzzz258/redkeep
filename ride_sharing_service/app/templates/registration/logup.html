@@ -1,4 +1,9 @@
-{% extends "base.html" %}
+{% extends "registration/base.html" %}
+
+{% block title %}
+Log up - Zber
+{% endblock %}
+
 
 {% block content %}
 
@@ -19,7 +24,6 @@
 {% csrf_token %}
     {{ form.as_p }}
 <input type="submit" value="log up">
-<input type="hidden" name="next" value="{{ next }}">
 </form>
 
 

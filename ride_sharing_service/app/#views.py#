@@ -1,10 +1,8 @@
-import sys
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .forms import LogupForm
-sys.path.append('..')
-from drivers.models import Driver
+from .models import Driver
 
 
 """
@@ -51,3 +49,7 @@ def index(request):
             
     context = {'user': user, 'driver': driver}
     return render(request, 'app/index.html', context)
+
+
+@login_required
+def 
