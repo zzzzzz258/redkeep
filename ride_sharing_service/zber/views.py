@@ -1,10 +1,7 @@
-import sys
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .forms import LogupForm
-sys.path.append('..')
-from drivers.models import Driver
 
 
 """
@@ -43,11 +40,5 @@ def log_up(request):
 @login_required
 def index(request):
     user = request.user
-    drivers = Driver.objects.filter(user_id = user.id)
-    if (drivers.exists()):
-        driver = drivers.get()
-    else:
-        driver = None
-            
-    context = {'user': user, 'driver': driver}
+    context = {'user': user}
     return render(request, 'zber/index.html', context)

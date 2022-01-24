@@ -2,17 +2,11 @@
 
 {% block sidebar %}
 
-<p>Welcome to Zber!</p>
 <ul class="list-group">
   <li class="list-group-item">Username: {{user.username}}</li>
   <li class="list-group-item">Name: {{user.first_name}} {{ user.last_name }}</li>
   <li class="list-group-item">Email: {{user.email}}</li>
 </ul>
-{% if driver %}
-
-{% else %}
-   <a class="btn btn-primary" href="{% url 'zber:drivers:register' %}" role="button">Register As a Driver!</a>
-{% endif %}
 <br>
 <a href="{% url 'logout' %}" class="btn btn-primary btn-lg" role="button">Log out</a>
 
@@ -25,8 +19,8 @@
     <div class="col-lg-6 mx-auto">
       <p class="lead mb-4">This is Zber, a ride sharing service. You can request a ride, join other's ride, or offer others a ride!</p>
       <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-        <a class="btn btn-primary btn-lg px-4 gap-3" href="#" role="button">I am rider</a>
-        <a class="btn btn-primary btn-lg px-4" href="#" role="button">I am driver</a>
+        <a class="btn btn-primary btn-lg px-4 gap-3" href="#" role="button">I'm a rider</a>
+        <a class="btn btn-primary btn-lg px-4" href="{% url 'zber:drivers:index' %}" role="button">I'm a driver</a>
       </div>
     </div>
   </div>

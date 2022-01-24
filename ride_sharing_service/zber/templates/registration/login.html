@@ -4,6 +4,19 @@
 Log in - Zber
 {% endblock %}
 
+{% block header %}
+  <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">       
+      </a>
+
+      <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+        <li><a href="#" class="nav-link px-2 link-secondary"></a></li>
+      </ul>
+
+      <div class="col-md-3">
+        <a href="{% url 'zber:logup' %}" class="btn btn-primary btn-lg" role="button">Log Up Now</a>
+      </div>
+{% endblock %}
+
 {% block content %}
 
 {% if form.errors %}
@@ -18,25 +31,24 @@ Log in - Zber
     <p>Please login to see this page.</p>
     {% endif %}
 {% endif %}
+<div class="form-signin">
+  <form method="post" action="{% url 'login' %}">    
+    <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
-<form method="post" action="{% url 'login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
+    <div>
+    <label>Username: </label>
+    {{ form.username }}
+    </div>
+    <div>
+    <label>Password: </label>
+    {{ form.password }}
+    </div>
+</div>
 
-<input type="submit" value="login">
-<input type="hidden" name="next" value="{{ next }}">
-</form>
+<input class="btn btn-lg btn-primary" type="submit" value="Log in">
 
-<a href="{% url 'zber:logup' %}" class="btn btn-primary btn-lg" role="button">Log Up Now</a>
+  </form>
+  </div>
 
 
 {% endblock %}

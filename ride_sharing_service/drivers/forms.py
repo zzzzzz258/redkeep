@@ -1,4 +1,4 @@
-from django.forms import ModelForm, PasswordInput
+from django.forms import ModelForm
 from .models import Driver
 
 
@@ -10,6 +10,6 @@ from .models import Driver
 class DriverForm(ModelForm):
     class Meta:
         model = Driver
-        exclude = ['user_id', 'driver_id']
+        exclude = ['user', 'driver_id']
         widgets = {
         }

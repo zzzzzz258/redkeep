@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 class Driver(models.Model):
     driver_id = models.BigAutoField(primary_key=True)
-    user_id = models.OneToOneField(
+    user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
     )

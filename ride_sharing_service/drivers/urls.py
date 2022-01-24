@@ -4,5 +4,7 @@ from .import views
 
 app_name = 'drivers'
 urlpatterns = [
-    path("register", views.register, name = 'register'), 
+    path("", views.index, name = 'index'),
+    path("register", views.register, name = 'register'),
+    path("edit", views.edit, name = 'edit'), 
 ]
