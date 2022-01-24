@@ -18,7 +18,7 @@ def register(request):
             new_driver = form.save(commit = False)
             new_driver.user_id = request.user.user_id
             new_driver.save()
-            return redirect('app:index')
+            return redirect('zber:index')
     else:
         form = DriverForm()
 

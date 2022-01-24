@@ -1,9 +1,8 @@
 {% extends "registration/base.html" %}
 
 {% block title %}
-Log up - Zber
+Log in - Zber
 {% endblock %}
-
 
 {% block content %}
 
@@ -20,11 +19,24 @@ Log up - Zber
     {% endif %}
 {% endif %}
 
-<form method="post" action="{% url 'app:logup' %}">
+<form method="post" action="{% url 'login' %}">
 {% csrf_token %}
-    {{ form.as_p }}
-<input type="submit" value="log up">
+<table>
+<tr>
+    <td>{{ form.username.label_tag }}</td>
+    <td>{{ form.username }}</td>
+</tr>
+<tr>
+    <td>{{ form.password.label_tag }}</td>
+    <td>{{ form.password }}</td>
+</tr>
+</table>
+
+<input type="submit" value="login">
+<input type="hidden" name="next" value="{{ next }}">
 </form>
+
+<a href="{% url 'zber:logup' %}" class="btn btn-primary btn-lg" role="button">Log Up Now</a>
 
 
 {% endblock %}

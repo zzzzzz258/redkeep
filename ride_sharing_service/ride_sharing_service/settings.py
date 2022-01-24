@@ -31,14 +31,16 @@ ALLOWED_HOSTS = ["vcm-24277.vm.duke.edu", "127.0.0.1"]
 # Application definition
 
 INSTALLED_APPS = [
-    'app.apps.AppConfig',
+    'zber.apps.AppConfig',
+    'drivers',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'drivers',
+    'django.contrib.sites',
+    'django.contrib.redirects',    
 ]
 
 MIDDLEWARE = [
@@ -49,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
 ]
 
 ROOT_URLCONF = 'ride_sharing_service.urls'
@@ -135,9 +138,12 @@ LOGIN_URL = '/account/login/'
 
 # After logging in, redirect to index page
 
-LOGIN_REDIRECT_URL = '/app/'
+LOGIN_REDIRECT_URL = '/'
 
 
 # Direct to login page after log out
 
 LOGOUT_REDIRECT_URL = '/account/login/'
+
+
+SITE_ID = 1
