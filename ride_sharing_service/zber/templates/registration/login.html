@@ -34,7 +34,7 @@ Log in - Zber
 <div class="form-signin">
   <form method="post" action="{% url 'login' %}">    
     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-
+    {% csrf_token %}
     <div>
     <label>Username: </label>
     {{ form.username }}
