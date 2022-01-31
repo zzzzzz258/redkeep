@@ -19,6 +19,12 @@
   <dt class="col-sm-3">Ride Owner</dt>
   <dd class="col-sm-9">{{ ride_owner.user.username }}</dd>
 
+  <dt class="col-sm-3">Ride Owner Email</dt>
+  <dd class="col-sm-9">{{ ride_owner.user.email }}</dd>
+  
+  <dt class="col-sm-3">Owner Passengers</dt>
+  <dd class="col-sm-9">{{ ride_owner.sum_owners }}</dd>
+  
   <dt class="col-sm-3">Destination Address</dt>
   <dd class="col-sm-9">{{ ride.dest_addr }}</dd>
 
@@ -31,7 +37,7 @@
   <dt class="col-sm-3">Special Info</dt>
   <dd class="col-sm-9">{{ ride_owner.special_requests }}</dd>  
   
-  <p>There are {{ride_sharers|length}} sharers in this ride.</p>
+  <h3>There are {{ride_sharers|length}} sharers in this ride.</h3>
   
   {% for sharer in ride_sharers %}
     <dt class="col-sm-3">Sharer Name</dt>
@@ -48,6 +54,11 @@
   <form action="{% url 'zber:drivers:ride_complete' ride.ride_owner.order_no %}" method="post">
     {% csrf_token %}
     <input role="button" class="btn btn-primary" type="submit" value="Complete">
+  </form>
+  <br>
+  <form action="{% url 'zber:drivers:ride_cancel' ride.ride_owner.order_no %}" method="post">
+    {% csrf_token %}
+    <input role="button" class="btn btn-danger" type="submit" value="Cancel">
   </form>
 </div>
 

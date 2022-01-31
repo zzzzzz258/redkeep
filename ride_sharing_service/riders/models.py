@@ -13,8 +13,9 @@ class Ride_Owner(models.Model):
     sum_owners = models.IntegerField()
     specific_type = models.CharField(max_length=1,
                                      choices=VEHICLE_TYPES,
+                                     default=None,
                                      null=True)
-    special_requests = models.CharField(max_length=200, null=True)
+    special_requests = models.CharField(max_length=200, null=True, default=None)
 
 
 class Ride(models.Model):
@@ -24,7 +25,7 @@ class Ride(models.Model):
     dest_addr = models.CharField(max_length=30)
     arrival_time = models.DateTimeField()
     sum_passengers = models.IntegerField()
-    driver = models.ForeignKey(Driver, on_delete=models.CASCADE, null=True)
+    driver = models.ForeignKey(Driver, on_delete=models.SET_NULL, null=True)
     share = models.BooleanField()
     STATUS_TYPES = (
         ('o', 'open'),

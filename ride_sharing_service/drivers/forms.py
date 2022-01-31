@@ -12,6 +12,7 @@ from zber.models import VEHICLE_TYPES
 
 
 class DriverForm(forms.ModelForm):
+    special_info = forms.CharField(required=False, max_length=200)
     class Meta:
         model = Driver
         exclude = ['user', 'driver_id']

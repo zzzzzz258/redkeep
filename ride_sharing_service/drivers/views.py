@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.urls import reverse
 from django.core.mail import send_mail
+from django.db.models import Q
 
 from .forms import DriverForm, SearchFormSet, SearchForm
 from .models import Driver
@@ -59,7 +60,7 @@ def register(request):
    Edit driver information
 """
 
-
+@login_required
 def edit(request):
     if request.method == 'POST':        
         form = DriverForm(request.POST,
@@ -69,14 +70,34 @@ def edit(request):
             return redirect('zber:drivers:index')
     else:
         form = DriverForm(instance = Driver.objects.get(user = request.user))
-    return render(request, 'drivers/register.html', {'form' : form})
+    return render(request, 'drivers/edit.html', {'form' : form})
 
+@login_required
+def delete(request):
+    if request.method == 'POST':
+        driver = Driver.objects.get(user=request.user)
+        # de-confirm all confirmed orders
+        rides = Ride.objects.filter(status='c').filter(driver=driver)
+        for ride in rides:
+            ride.status='o'
+            send_mail(
+            'Confirmation Cancelled',
+            'We are sorry to inform you that your confirmed order has been re-opened.',
+            'zber568@outlook.com',
+            [ride.ride_owner.user.email],
+            fail_silently=False,
+            )
+            ride.save()
+        driver.delete()
+        return redirect('zber:drivers:index')
+    else:
+        return render(request, 'drivers/delete.html', {})    
 
 """
    Ride view in driver app
 """
 
-
+@login_required
 def ride(request, ride_owner_id):
     driver = Driver.objects.get(user = request.user)
     ride_owner = Ride_Owner.objects.get(order_no = ride_owner_id)
@@ -94,7 +115,7 @@ def ride(request, ride_owner_id):
    Completes a ride. Only allow POST request, raise 404 error for GET request
 """
 
-
+@login_required
 def ride_complete(request, ride_owner_id):
     if request.method == 'POST':
         ride_owner = Ride_Owner.objects.get(order_no = ride_owner_id)
@@ -106,52 +127,25 @@ def ride_complete(request, ride_owner_id):
         raise Http404("Page Not Found")
 
 
+    
 """
    Display all search results to driver user
 """
 
-
+@login_required
 def search(request):
-    if request.method == 'POST':
-        form = SearchForm(request.POST)
-        if form.is_valid():
-            max_passengers = form.cleaned_data['max_passengers']
-            vehicle_type = form.cleaned_data['vehicle_type']
-            special_request_info = form.cleaned_data['special_request_info']
-            raw_url = reverse('zber:drivers:search_results')+'?'
-            if max_passengers is not None:
-                raw_url += ('max_passengers='+str(max_passengers))
-            if len(vehicle_type) == 1:
-                raw_url += ('&vehicle_type='+vehicle_type[0])
-            if special_request_info is not None:
-                raw_url += ('&special_request_info='+special_request_info)
-            return redirect(raw_url)
-    else:
-        form = SearchForm()
-    return render(request, 'drivers/search.html', {'form': form})
-
-
-"""
-   Show the results of seaching in driver search
-"""
-
-
-def search_results(request):
     results = Ride.objects.filter(status='o')
-    
-    max_passengers = request.GET.get('max_passengers')
-    if max_passengers is not None:
-        results = results.filter(sum_passengers__range=(1, max_passengers))
+    # exclude driver user requested rides
+    results = results.exclude(ride_owner__user=request.user)    
+    driver_shared_ride_owners = Ride_Sharer.objects.filter(user=request.user).values_list('ride__ride_owner', flat=True)
+    # exclude all ride that shared by driver user
+    results = results.exclude(ride_owner__in=driver_shared_ride_owners)
+    driver = Driver.objects.get(user = request.user)
+    results = results.filter(sum_passengers__range=(1, driver.max_passengers))
+    results = results.filter(Q(ride_owner__specific_type='') | Q(ride_owner__specific_type=driver.vehicle_type))
+    results = results.filter(Q(ride_owner__special_requests='') | Q(ride_owner__special_requests=driver.special_info))   
 
-    vehicle_type = request.GET.get('vehicle_type')
-    if vehicle_type is not None:
-        results = results.filter(ride_owner__specific_type=vehicle_type)
-
-    special_request_info = request.GET.get('special_request_info')
-    if special_request_info is not None:
-        results = results.filter(ride_owner__special_requests=special_request_info)
-
-    context = {'result_rides': results, 'form': SearchForm()}
+    context = {'result_rides': results}
     return render(request, 'drivers/search.html', context)
 
 
@@ -159,7 +153,7 @@ def search_results(request):
    Confirm a ride
 """
 
-
+@login_required
 def ride_confirm(request, ride_owner_id):
     if request.method == 'POST':
         ride_owner = Ride_Owner.objects.get(order_no = ride_owner_id)
@@ -179,3 +173,28 @@ def ride_confirm(request, ride_owner_id):
     else:
         raise Http404("Page Not Found")
     
+"""
+   Cancel a ride, set the status back to open and reset the driver to null
+"""
+
+@login_required
+def ride_cancel(request, ride_owner_id):
+    if request.method == 'POST':
+        ride_owner = Ride_Owner.objects.get(order_no = ride_owner_id)
+        ride = Ride.objects.get(ride_owner = ride_owner)
+        # reset driver to null
+        ride.driver = None
+        # reset status to open
+        ride.status = 'o'
+        # send email to owner and sharers, not sending to sharers yet
+        send_mail(
+            'Ride Cancellation',
+            'This is to inform you that your confirmed ride has been cancelled!',
+            'zber568@outlook.com',
+            [ride.ride_owner.user.email],
+            fail_silently=False,
+        )
+        ride.save()
+        return redirect('zber:drivers:index')
+    else:
+        raise Http404("Page Not Found")

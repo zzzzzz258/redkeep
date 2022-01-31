@@ -19,7 +19,7 @@
     <div class="col-lg-6 mx-auto">
       <p class="lead mb-4">This is Zber, a ride sharing service. You can request a ride, join other's ride, or offer others a ride!</p>
       <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
-        <a class="btn btn-primary btn-lg px-4 gap-3" href="#" role="button">I'm a rider</a>
+        <a class="btn btn-primary btn-lg px-4 gap-3" href="{% url 'zber:riders:index' %}" role="button">I'm a rider</a>
         <a class="btn btn-primary btn-lg px-4" href="{% url 'zber:drivers:index' %}" role="button">I'm a driver</a>
       </div>
     </div>
