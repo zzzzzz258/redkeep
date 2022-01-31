@@ -8,4 +8,3 @@ do
     python3 manage.py migrate
     res="$?"
 done
-
